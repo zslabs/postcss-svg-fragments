@@ -1,0 +1,33 @@
+.icon {
+	background-image: url(store.svg#camera);
+}
+
+.icon {
+	background-image: url(store.svg#pencil);
+	fill: red;
+	stroke: black;
+}
+
+.icon {
+	background-image: url(store.svg#none);
+}
+
+.icon {
+	background-image: url(store.svg#);
+}
+
+.icon {
+	background-image: url(store.svg);
+}
+
+.icon {
+	background-image: url(empty.svg#none);
+}
+
+.icon {
+	background-image: url(empty.svg#);
+}
+
+.icon {
+	background-image: url(empty.svg);
+}

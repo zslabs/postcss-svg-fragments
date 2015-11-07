@@ -1,0 +1,51 @@
+{
+  "name": "postcss-svg-fragments",
+  "version": "1.0.0",
+  "description": "Use SVG fragments in CSS URLs",
+  "keywords": [
+    "postcss",
+    "css",
+    "postcss-plugin",
+    "svgs",
+    "scalable",
+    "vectors",
+    "images",
+    "graphics",
+    "fragments",
+    "identifiers",
+    "ids",
+    "hashes",
+    "urls",
+    "utf8",
+    "base64"
+  ],
+  "author": "Jonathan Neal <jonathantneal@hotmail.com>",
+  "license": "CC0-1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jonathantneal/postcss-svg-fragments.git"
+  },
+  "homepage": "https://github.com/jonathantneal/postcss-svg-fragments",
+  "bugs": {
+    "url": "https://github.com/jonathantneal/postcss-svg-fragments/issues"
+  },
+  "dependencies": {
+    "postcss": "^5.0.11",
+    "postcss-value-parser": "^3.1.1",
+    "xmldoc": "^0.3.2"
+  },
+  "devDependencies": {
+    "eslint": "^1.9.0",
+    "tap-spec": "^4.1.0",
+    "tape": "^4.2.2"
+  },
+  "scripts": {
+    "lint": "eslint . --ignore-path .gitignore",
+    "tape": "tape test/*.js | tap-spec",
+    "test": "npm run lint && npm run tape"
+  },
+  "engines": {
+    "iojs": ">=2.0.0",
+    "node": ">=0.12.0"
+  }
+}
