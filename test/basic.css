@@ -9,6 +9,11 @@
 }
 
 .icon {
+	background-image: url(store.svg#pencil);
+	fill: blue;
+}
+
+.icon {
 	background-image: url(store.svg#none);
 }
 

@@ -9,6 +9,11 @@
 }
 
 .icon {
+	background-image: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSJibHVlIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNNDMyIDBjNDQuMTgyIDAgODAgMzUuODE3IDgwIDgwIDAgMTguMDEtNS45NTUgMzQuNjI5LTE2IDQ4bC0zMiAzMi0xMTItMTEyIDMyLTMyYzEzLjM3MS0xMC4wNDUgMjkuOTg5LTE2IDQ4LTE2em0tNDAwIDM2OGwtMzIgMTQ0IDE0NC0zMiAyOTYtMjk2LTExMi0xMTItMjk2IDI5NnptMzI1Ljc4OS0xODYuMjExbC0yMjQgMjI0LTI3LjU3OC0yNy41NzggMjI0LTIyNCAyNy41NzggMjcuNTc4eiIvPgo8L3N2Zz4=);
+	fill: blue;
+}
+
+.icon {
 	background-image: url(store.svg#none);
 }
 
