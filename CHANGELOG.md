@@ -1,3 +1,9 @@
+## 1.2.1 (2016-02-04)
+
+- Updated: Flattened Promises
+- Updated: Fixed `fs-promise` dependency
+- Updated: Package dependencies
+
 ## 1.2.0 (2016-02-01)
 
 - Added: Asynchronous read SVGs and cache them
