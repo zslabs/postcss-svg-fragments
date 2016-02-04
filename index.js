@@ -18,91 +18,92 @@ module.exports = postcss.plugin('postcss-svg-fragments', function (opts) {
 		// create an svg promises array
 		var svgPromises = [];
 
+		// create array with modified declarations
+		var modifiedDecls = [];
+
 		// walk declarations
 		css.walkDecls(function (decl) {
 			// if the declaration has a url
-			if (matchURL.test(decl.value)) {
-				// cache the declaration’s siblings
-				var parent = decl.parent;
-
-				// push a new css promise to the css promises array
-				cssPromises.push(new Promise(function (resolve) {
-					// create a declaration promises array
-					var declPromises = [];
-
-					// create the declaration value node
-					var declValue = parser(decl.value);
-
-					// walk each node of the declaration
-					declValue.walk(function (node) {
-						// if the node is a url containing an svg fragment
-						if (node.type === 'function' && node.value === 'url' || matchURL.test(parser.stringify(node))) {
-							// get the closest file path of the
-							var cwf = decl.source.input.file;
-
-							// set the directory b the closest
-							var dir  = cwf ? path.dirname(cwf) : process.cwd();
-
-							// parse the svg url
-							var url   = node.nodes[0];
-							var parts = url.value.split('#');
-							var file  = path.join(dir, parts.shift());
-							var id    = parts.join('#');
-
-							// get cached svg promise
-							var svgPromise = svgPromises[file] = svgPromises[file] || fs.readFile(file, {
-								encoding: 'utf8'
-							}).then(function (content) {
-								// return an xml tree of the svg
-								var document = new xmldoc.XmlDocument(content);
-
-								document.ids = {};
-
-								return document;
-							});
-
-							// push a modified svg promise to the declaration promises array
-							declPromises.push(svgPromise.then(function (document) {
-								// cache fragment by id
-								document.ids[id] = document.ids[id] || getElementById(document, id);
-
-								// if the fragment id exists
-								if (document.ids[id]) {
-									// get cloned fragment
-									var clone = cloneNode(document.ids[id]);
-
-									// walk each sibling declaration
-									parent.nodes.forEach(function (sibling) {
-										// if the sibling is a matching declaration
-										if (sibling.type === 'decl' && matchProp.test(sibling.prop)) {
-											// update the corresponding attribute on the clone
-											clone.attr[sibling.prop] = sibling.value;
-										}
-									});
-
-									// update the url node
-									url.value = node2uri(clone, document, isBase64);
-								}
-							}).catch(function (error) {
-								result.warn(error, node);
-							}));
-						}
-					});
-
-					// chain modified declaration promises
-					Promise.all(declPromises).then(function () {
-						// update the declaration value
-						decl.value = declValue.toString();
-
-						// resolve the css promise
-						resolve();
-					});
-				}));
+			if (!matchURL.test(decl.value)) {
+				return;
 			}
+
+			modifiedDecls.push(decl);
+
+			// cache the declaration’s siblings
+			var parent = decl.parent;
+
+			// walk each node of the declaration
+			decl.value = parser(decl.value).walk(function (node) {
+				// if the node is a url containing an svg fragment
+				if (
+					node.type !== 'function' ||
+					node.value !== 'url' ||
+					node.nodes.length === 0 ||
+					node.nodes[0].value.indexOf('.svg#') === -1
+				) {
+					return;
+				}
+
+				// get the closest file path of the
+				var cwf = decl.source.input.file;
+
+				// set the directory b the closest
+				var dir  = cwf ? path.dirname(cwf) : process.cwd();
+
+				// parse the svg url
+				var url   = node.nodes[0];
+				var parts = url.value.split('#');
+				var file  = path.join(dir, parts.shift());
+				var id    = parts.join('#');
+
+				// get cached svg promise
+				var svgPromise = svgPromises[file] = svgPromises[file] || fs.readFile(file, {
+					encoding: 'utf8'
+				}).then(function (content) {
+					// return an xml tree of the svg
+					var document = new xmldoc.XmlDocument(content);
+
+					document.ids = {};
+
+					return document;
+				});
+
+				// push a modified svg promise to the declaration promises array
+				cssPromises.push(svgPromise.then(function (document) {
+					// cache fragment by id
+					document.ids[id] = document.ids[id] || getElementById(document, id);
+
+					// if the fragment id exists
+					if (document.ids[id]) {
+						// get cloned fragment
+						var clone = cloneNode(document.ids[id]);
+
+						// walk each sibling declaration
+						parent.nodes.forEach(function (sibling) {
+							// if the sibling is a matching declaration
+							if (sibling.type === 'decl' && matchProp.test(sibling.prop)) {
+								// update the corresponding attribute on the clone
+								clone.attr[sibling.prop] = sibling.value;
+							}
+						});
+
+						// update the url node
+						url.value = node2uri(clone, document, isBase64);
+					}
+				}).catch(function (error) {
+					result.warn(error, node);
+				}));
+			});
 		});
 
 		// return chained css promises array
-		return Promise.all(cssPromises);
+		return Promise.all(cssPromises).then(function () {
+			modifiedDecls.forEach(function (decl) {
+				// update the declaration value
+				decl.value = decl.value.toString();
+			});
+		});
 	};
 });
 
