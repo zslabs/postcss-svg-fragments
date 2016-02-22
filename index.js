@@ -140,7 +140,7 @@ function node2uri(fragment, document, isBase64) {
 	uri += isBase64 ? encodeBase64(fragment) : encodeUTF8(fragment);
 
 	// return data URI
-	return uri;
+	return '"' + uri + '"';
 }
 
 function encodeBase64(stringable) {
@@ -161,6 +161,7 @@ function encodeUTF8(stringable) {
 	.replace(/'/g, '\\\'')
 	// decode compatible characters
 	.replace(/%20/g, ' ')
+	.replace(/%22/g, '\'')
 	.replace(/%2F/g, '/')
 	.replace(/%3A/g, ':')
 	.replace(/%3D/g, '=')

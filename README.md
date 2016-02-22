@@ -18,7 +18,7 @@
 /* after */
 
 .icon {
-	background-image: url(data:image/svg+xml;charset=utf-8,%3Csvg fill=%22red%22 stroke=%22black%22 viewBox=%220 0 512 512%22 xmlns=%22http://www.w3.org/2000/svg%22%3E %3Cpath d=%22M432 0c44.182 0 80 35.817 80 80 0 18.01-5.955 34.629-16 48l-32 32-112-112 32-32c13.371-10.045 29.989-16 48-16zm-400 368l-32 144 144-32 296-296-112-112-296 296zm325.789-186.211l-224 224-27.578-27.578 224-224 27.578 27.578z%22/%3E %3C/svg%3E);
+	background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg fill='red' stroke='black' viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E %3Cpath d='M432 0c44.182 0 80 35.817 80 80 0 18.01-5.955 34.629-16 48l-32 32-112-112 32-32c13.371-10.045 29.989-16 48-16zm-400 368l-32 144 144-32 296-296-112-112-296 296zm325.789-186.211l-224 224-27.578-27.578 224-224 27.578 27.578z'/%3E %3C/svg%3E");
 	fill: red;
 	stroke: black;
 }
@@ -140,7 +140,7 @@ Allows you to define the encoding of an SVG.
 /* after */
 
 .icon {
-	background-image: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSJyZWQiIHN0cm9rZT0iYmxhY2siIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxwYXRoIGQ9Ik00MzIgMGM0NC4xODIgMCA4MCAzNS44MTcgODAgODAgMCAxOC4wMS01Ljk1NSAzNC42MjktMTYgNDhsLTMyIDMyLTExMi0xMTIgMzItMzJjMTMuMzcxLTEwLjA0NSAyOS45ODktMTYgNDgtMTZ6bS00MDAgMzY4bC0zMiAxNDQgMTQ0LTMyIDI5Ni0yOTYtMTEyLTExMi0yOTYgMjk2em0zMjUuNzg5LTE4Ni4yMTFsLTIyNCAyMjQtMjcuNTc4LTI3LjU3OCAyMjQtMjI0IDI3LjU3OCAyNy41Nzh6Ii8+Cjwvc3ZnPg==);
+	background-image: url("data:image/svg+xml;base64,PHN2ZyBmaWxsPSJyZWQiIHN0cm9rZT0iYmxhY2siIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxwYXRoIGQ9Ik00MzIgMGM0NC4xODIgMCA4MCAzNS44MTcgODAgODAgMCAxOC4wMS01Ljk1NSAzNC42MjktMTYgNDhsLTMyIDMyLTExMi0xMTIgMzItMzJjMTMuMzcxLTEwLjA0NSAyOS45ODktMTYgNDgtMTZ6bS00MDAgMzY4bC0zMiAxNDQgMTQ0LTMyIDI5Ni0yOTYtMTEyLTExMi0yOTYgMjk2em0zMjUuNzg5LTE4Ni4yMTFsLTIyNCAyMjQtMjcuNTc4LTI3LjU3OCAyMjQtMjI0IDI3LjU3OCAyNy41Nzh6Ii8+Cjwvc3ZnPg==");
 	fill: red;
 	stroke: black;
 }

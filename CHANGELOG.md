@@ -1,3 +1,9 @@
+## 1.3.0 (2016-02-22)
+
+- Added: Reduce encoding of quotations
+- Added: Wrap data URL in quotations
+- Updated: Tests and documentation
+
 ## 1.2.1 (2016-02-04)
 
 - Updated: Flattened Promises
