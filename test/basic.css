@@ -3,6 +3,10 @@
 }
 
 .icon {
+	background-image: url("store.svg#camera");
+}
+
+.icon {
 	background-image: url(store.svg#pencil);
 	fill: red;
 	stroke: black;

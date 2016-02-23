@@ -45,7 +45,7 @@ module.exports = postcss.plugin('postcss-svg-fragments', function (opts) {
 					return;
 				}
 
-				// get the closest file path of the
+				// get the closest working file path of the node
 				var cwf = decl.source.input.file;
 
 				// set the directory b the closest
@@ -90,6 +90,12 @@ module.exports = postcss.plugin('postcss-svg-fragments', function (opts) {
 
 						// update the url node
 						url.value = node2uri(clone, document, isBase64);
+
+						// add quote to base64 urls to improve compatibility
+						if (!isBase64) {
+							url.quote = '"';
+							url.type = 'string';
+						}
 					}
 				}).catch(function (error) {
 					result.warn(error, node);
@@ -133,14 +139,14 @@ function node2uri(fragment, document, isBase64) {
 	fragment.attr.xmlns = 'http://www.w3.org/2000/svg';
 
 	// build data URI
-	var uri = 'data:image/svg+xml;';
+	var uri = 'data:image/svg+xml';
 
-	uri += isBase64 ? 'base64,' : 'charset=utf-8,';
+	uri += isBase64 ? ';base64,' : ',';
 
 	uri += isBase64 ? encodeBase64(fragment) : encodeUTF8(fragment);
 
 	// return data URI
-	return '"' + uri + '"';
+	return uri;
 }
 
 function encodeBase64(stringable) {

@@ -1,3 +1,8 @@
+## 1.3.1 (2016-02-22)
+
+- Updated: utf-8 encoding
+- Updated: Tests
+
 ## 1.3.0 (2016-02-22)
 
 - Added: Reduce encoding of quotations
