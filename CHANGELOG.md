@@ -1,3 +1,10 @@
+## 1.3.2 (2016-02-23)
+
+- Added: jscs 2.x for development
+- Added: Test for color with fill and stroke
+- Updated: eslint 2.x for development (was 1.x)
+- Updated: Code formatting
+
 ## 1.3.1 (2016-02-22)
 
 - Updated: utf-8 encoding

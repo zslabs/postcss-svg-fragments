@@ -8,6 +8,7 @@
 
 .icon {
 	background-image: url(store.svg#pencil);
+	color: transparent;
 	fill: red;
 	stroke: black;
 }

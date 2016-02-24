@@ -123,8 +123,12 @@ function getElementById(node, id) {
 		while (child = node.children[++index]) {
 			child = getElementById(child, id);
 
-			if (child) return child;
+			if (child) {
+				return child;
+			}
 		}
+
+		return undefined;
 	}
 }
 
