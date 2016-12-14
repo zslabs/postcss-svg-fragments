@@ -14,7 +14,7 @@ const propertyMatch = /^(color|fill|height|stroke|stroke-width|width)$/;
 // plugin
 module.exports = postcss.plugin('postcss-svg-fragments', ({
 	utf8 = true
-}) => (css, result) => {
+} = {}) => (css, result) => {
 	// create a css promises array
 	const cssPromises = [];
 
@@ -24,121 +24,124 @@ module.exports = postcss.plugin('postcss-svg-fragments', ({
 	// create array with modified declarations
 	const modifiedDecls = [];
 
-	// walk declarations
+	// walk each declaration
 	css.walkDecls((decl) => {
 		// if the declaration has a url
-		if (!urlMatch.test(decl.value)) {
-			return;
-		}
+		if (urlMatch.test(decl.value)) {
+			modifiedDecls.push(decl);
 
-		modifiedDecls.push(decl);
+			// cache the declaration’s siblings
+			const parent = decl.parent;
 
-		// cache the declaration’s siblings
-		const parent = decl.parent;
+			// walk each node of the declaration
+			decl.value = parser(decl.value).walk((node) => {
+				// if the node is a url containing an svg fragment
+				if (
+					node.type === 'function' &&
+					node.value === 'url' &&
+					node.nodes.length !== 0 &&
+					node.nodes[0].value.indexOf('.svg#') !== -1
+				) {
+					// current file path of the node
+					const cwf = decl.source.input.file;
 
-		// walk each node of the declaration
-		decl.value = parser(decl.value).walk(function (node) {
-			// if the node is a url containing an svg fragment
-			if (
-				node.type !== 'function' ||
-				node.value !== 'url' ||
-				node.nodes.length === 0 ||
-				node.nodes[0].value.indexOf('.svg#') === -1
-			) {
-				return;
-			}
+					// current file or current working directory
+					const dir  = cwf ? path.dirname(cwf) : process.cwd();
 
-			// current file path of the node
-			const cwf = decl.source.input.file;
+					// parse the svg url
+					const url   = node.nodes[0];
+					const parts = url.value.split('#');
+					const file  = path.join(dir, parts.shift());
+					const id    = parts.join('#');
 
-			// current file or current working directory
-			const dir  = cwf ? path.dirname(cwf) : process.cwd();
+					// get cached svg promise
+					const svgPromise = svgPromises[file] = svgPromises[file] || readFile(file, {
+						encoding: 'utf8'
+					}).then((content) => {
+						// return an xml tree of the svg
+						const document = new xmldoc.XmlDocument(content);
 
-			// parse the svg url
-			const url   = node.nodes[0];
-			const parts = url.value.split('#');
-			const file  = path.join(dir, parts.shift());
-			const id    = parts.join('#');
+						document.ids = {};
 
-			// get cached svg promise
-			const svgPromise = svgPromises[file] = svgPromises[file] || readFile(file, {
-				encoding: 'utf8'
-			}).then(function (content) {
-				// return an xml tree of the svg
-				const document = new xmldoc.XmlDocument(content);
-
-				document.ids = {};
-
-				return document;
-			});
-
-			// push a modified svg promise to the declaration promises array
-			cssPromises.push(svgPromise.then((document) => {
-				if (id) {
-					// cache fragment by id
-					document.ids[id] = document.ids[id] || getElementById(document, id);
-
-					// if the fragment id exists
-					if (document.ids[id]) {
-						// get cloned fragment
-						const clonedFragment = cloneNode(document.ids[id]);
-
-						// walk each sibling declaration
-						parent.nodes.forEach((sibling) => {
-							// if the sibling is a matching declaration
-							if (sibling.type === 'decl' && propertyMatch.test(sibling.prop)) {
-								// update the corresponding attribute on the clone
-								clonedFragment.attr[sibling.prop] = sibling.value;
-							}
-						});
-
-						// update the url node
-						url.value = node2uri(clonedFragment, document, utf8);
-
-						// add quote to base64 urls to improve compatibility
-						if (utf8) {
-							url.quote = '"';
-							url.type = 'string';
-						}
-					}
-				} else {
-					// get cloned fragment
-					const clonedDocument = cloneNode(document);
-
-					// walk each sibling declaration
-					parent.nodes.forEach(function (sibling) {
-						// if the sibling is a matching declaration
-						if (sibling.type === 'decl' && propertyMatch.test(sibling.prop)) {
-							// update the corresponding attribute on the clone
-							clonedDocument.attr[sibling.prop] = sibling.value;
-						}
+						return document;
 					});
 
-					// update the url node
-					url.value = node2uri(clonedDocument, document, utf8);
+					// push a modified svg promise to the declaration promises array
+					cssPromises.push(svgPromise.then((document) => {
+						if (id) {
+							// cache fragment by id
+							document.ids[id] = document.ids[id] || getElementById(document, id);
 
-					// add quote to base64 urls to improve compatibility
-					if (utf8) {
-						url.quote = '"';
-						url.type = 'string';
-					}
+							// if the fragment id exists
+							if (document.ids[id]) {
+								// get cloned fragment
+								const clonedFragment = cloneNode(document.ids[id]);
+
+								// walk each sibling declaration
+								parent.nodes.forEach((sibling) => {
+									// if the sibling is a matching declaration
+									if (sibling.type === 'decl' && propertyMatch.test(sibling.prop)) {
+										// update the corresponding attribute on the clone
+										clonedFragment.attr[sibling.prop] = sibling.value;
+									}
+								});
+
+								// update the url node
+								url.value = node2uri(clonedFragment, document, utf8);
+
+								// add quote to base64 urls to improve compatibility
+								if (utf8) {
+									url.quote = '"';
+									url.type = 'string';
+								}
+							}
+						} else {
+							// get cloned fragment
+							const clonedDocument = cloneNode(document);
+
+							// walk each sibling declaration
+							parent.nodes.forEach((sibling) => {
+								// if the sibling is a matching declaration
+								if (sibling.type === 'decl' && propertyMatch.test(sibling.prop)) {
+									// update the corresponding attribute on the clone
+									clonedDocument.attr[sibling.prop] = sibling.value;
+								}
+							});
+
+							// update the url node
+							url.value = node2uri(clonedDocument, document, utf8);
+
+							// add quote to base64 urls to improve compatibility
+							if (utf8) {
+								url.quote = '"';
+								url.type = 'string';
+							}
+						}
+					}).catch((error) => {
+						result.warn(error, node);
+					}));
 				}
-			}).catch(function (error) {
-				result.warn(error, node);
-			}));
-		});
+			});
+		}
 	});
 
 	// return chained css promises array
-	return Promise.all(cssPromises).then(function () {
-		modifiedDecls.forEach(function (decl) {
+	return Promise.all(cssPromises).then(() => {
+		modifiedDecls.forEach((decl) => {
 			// update the declaration value
 			decl.value = decl.value.toString();
 		});
 	});
 });
 
-function getElementById(node, id) {
+// override plugin#process
+module.exports.process = function (cssString, pluginOptions, processOptions) {
+	return postcss([
+		0 in arguments ? module.exports(pluginOptions) : module.exports()
+	]).process(cssString, processOptions);
+};
+
+const getElementById = (node, id) => {
 	if (node.attr.id === id) {
 		return node;
 	} else {
@@ -155,9 +158,9 @@ function getElementById(node, id) {
 
 		return undefined;
 	}
-}
+};
 
-function node2uri(fragment, document, utf8) {
+const node2uri = (fragment, document, utf8) => {
 	// rebuild fragment as <svg>
 	fragment.name = 'svg';
 
@@ -171,7 +174,7 @@ function node2uri(fragment, document, utf8) {
 
 	// return data URI
 	return `data:image/svg+xml;${ utf8 ? `charset=utf-8,${ encodeUTF8(xml) }` : `base64,${ new Buffer(xml).toString('base64') }` }`;
-}
+};
 
 // encode the string as utf-8
 const encodeUTF8 = (string) => encodeURIComponent(
