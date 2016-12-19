@@ -1,12 +1,18 @@
 // tooling
-const fs      = require('fs');
 const parser  = require('postcss-value-parser');
 const path    = require('path');
 const postcss = require('postcss');
 const xmldoc  = require('xmldoc');
 
-// url matcher
-const urlMatch  = /(^|\s)url\(.+\.svg#.+\)(\s|$)/;
+// local tooling
+const cloneNode      = require('./lib/clone-node');
+const getElementById = require('./lib/get-element-by-id');
+const nodeToURI      = require('./lib/node-to-uri');
+const readFile       = require('./lib/read-file');
+const resolveModule  = require('./lib/resolve-module');
+
+// value matcher
+const valueMatch = /(^|\s)url\(.+#.+\)(\s|$)/;
 
 // property matcher
 const propertyMatch = /^(color|fill|height|stroke|stroke-width|width)$/;
@@ -26,8 +32,8 @@ module.exports = postcss.plugin('postcss-svg-fragments', ({
 
 	// walk each declaration
 	css.walkDecls((decl) => {
-		// if the declaration has a url
-		if (urlMatch.test(decl.value)) {
+		// if the declaration has a url with a fragment
+		if (valueMatch.test(decl.value)) {
 			modifiedDecls.push(decl);
 
 			// cache the declaration’s siblings
@@ -40,7 +46,7 @@ module.exports = postcss.plugin('postcss-svg-fragments', ({
 					node.type === 'function' &&
 					node.value === 'url' &&
 					node.nodes.length !== 0 &&
-					node.nodes[0].value.indexOf('.svg#') !== -1
+					node.nodes[0].value.indexOf('#') !== -1
 				) {
 					// current file path of the node
 					const cwf = decl.source.input.file;
@@ -51,13 +57,23 @@ module.exports = postcss.plugin('postcss-svg-fragments', ({
 					// parse the svg url
 					const url   = node.nodes[0];
 					const parts = url.value.split('#');
-					const file  = path.join(dir, parts.shift());
+					const base  = parts.shift();
+					const file  = path.join(dir, base);
 					const id    = parts.join('#');
 
 					// get cached svg promise
-					const svgPromise = svgPromises[file] = svgPromises[file] || readFile(file, {
-						encoding: 'utf8'
-					}).then((content) => {
+					const svgPromise = svgPromises[file] = svgPromises[file] || readFile(file).catch(() => resolveModule(base, {
+						basedir: path.resolve(dir),
+						packageFilter: (pkg) => {
+							// if media is found
+							if (pkg.media) {
+								// re-assign media to main
+								pkg.main = pkg.media;
+							}
+
+							return pkg;
+						}
+					}).then(readFile)).then((content) => {
 						// return an xml tree of the svg
 						const document = new xmldoc.XmlDocument(content);
 
@@ -87,7 +103,7 @@ module.exports = postcss.plugin('postcss-svg-fragments', ({
 								});
 
 								// update the url node
-								url.value = node2uri(clonedFragment, document, utf8);
+								url.value = nodeToURI(clonedFragment, document, utf8);
 
 								// add quote to base64 urls to improve compatibility
 								if (utf8) {
@@ -109,7 +125,7 @@ module.exports = postcss.plugin('postcss-svg-fragments', ({
 							});
 
 							// update the url node
-							url.value = node2uri(clonedDocument, document, utf8);
+							url.value = nodeToURI(clonedDocument, document, utf8);
 
 							// add quote to base64 urls to improve compatibility
 							if (utf8) {
@@ -139,96 +155,4 @@ module.exports.process = function (cssString, pluginOptions, processOptions) {
 	return postcss([
 		0 in arguments ? module.exports(pluginOptions) : module.exports()
 	]).process(cssString, processOptions);
-};
-
-const getElementById = (node, id) => {
-	if (node.attr.id === id) {
-		return node;
-	} else {
-		let index = -1;
-		let child;
-
-		while (child = node.children[++index]) {
-			child = getElementById(child, id);
-
-			if (child) {
-				return child;
-			}
-		}
-
-		return undefined;
-	}
-};
-
-const node2uri = (fragment, document, utf8) => {
-	// rebuild fragment as <svg>
-	fragment.name = 'svg';
-
-	delete fragment.attr.id;
-
-	fragment.attr.viewBox = fragment.attr.viewBox || document.attr.viewBox;
-
-	fragment.attr.xmlns = 'http://www.w3.org/2000/svg';
-
-	const xml = String(fragment);
-
-	// return data URI
-	return `data:image/svg+xml;${ utf8 ? `charset=utf-8,${ encodeUTF8(xml) }` : `base64,${ new Buffer(xml).toString('base64') }` }`;
-};
-
-// encode the string as utf-8
-const encodeUTF8 = (string) => encodeURIComponent(
-	string.replace(
-		// collapse whitespace
-		/[\n\r\s\t]+/g, ' '
-	).replace(
-		// remove comments
-		/<\!--([\W\w]*(?=-->))-->/g, ''
-	).replace(
-		// pre-encode ampersands
-		/&/g, '%26'
-	)
-).replace(
-	// escape commas
-	/'/g, '\\\''
-).replace(
-	// un-encode compatible characters
-	/%20/g, ' '
-).replace(
-	/%22/g, '\''
-).replace(
-	/%2F/g, '/'
-).replace(
-	/%3A/g, ':'
-).replace(
-	/%3D/g, '='
-).replace(
-	// encode additional incompatible characters
-	/\(/g, '%28'
-).replace(
-	/\)/g, '%29'
-);
-
-const readFile = (file) => new Promise(
-	(resolve, reject) => fs.readFile(
-		file,
-		'utf8',
-		(error, data) => error ? reject(error) : resolve(data)
-	)
-);
-
-const cloneNode = (node) => {
-	const clone = {};
-
-	for (let key in node) {
-		if (node[key] instanceof Array) {
-			clone[key] = node[key].map(cloneNode);
-		} else if (typeof node[key] === 'object') {
-			clone[key] = cloneNode(node[key]);
-		} else {
-			clone[key] = node[key];
-		}
-	}
-
-	return clone;
 };

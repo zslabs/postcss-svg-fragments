@@ -1,5 +1,10 @@
 # Changes to SVG Fragments
 
+### 2.1.0 (December 19, 2016)
+
+- Added: Ability to use SVG fragments from modules
+- Updated: Moved local tools into lib directory
+
 ### 2.0.1 (December 8, 2016)
 
 - Updated: Use destructing assignment on plugin options

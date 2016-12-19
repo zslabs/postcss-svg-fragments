@@ -12,7 +12,7 @@
 /* before */
 
 .icon {
-    background-image: url(store.svg#pencil);
+    background-image: url(sprite.svg#pencil);
     fill: red;
     stroke: black;
 }
@@ -26,7 +26,7 @@
 }
 ```
 
-When **store.svg** is:
+When **sprite.svg** is:
 
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -52,7 +52,7 @@ Allows you to define whether UTF-8 or base64 encoding will be used.
 /* before { utf8: false } */
 
 .icon {
-	background-image: url(store.svg#pencil);
+	background-image: url(sprite.svg#pencil);
 	fill: red;
 	stroke: black;
 }
@@ -147,6 +147,10 @@ grunt.initConfig({
 });
 ```
 
+## Additional Usage
+
+You may also use SVG Fragments found in [modules]. Just specify the SVG using the `media` field in `package.json`, and then use `url("my-module#my-fragment")` to reference the SVG Fragment in CSS. You may also use files from modules, like `url("my-module/my-sprite.svg#my-fragment")`.
+
 [npm-url]: https://www.npmjs.com/package/postcss-svg-fragments
 [npm-img]: https://img.shields.io/npm/v/postcss-svg-fragments.svg
 [cli-url]: https://travis-ci.org/jonathantneal/postcss-svg-fragments
@@ -162,3 +166,4 @@ grunt.initConfig({
 [PostCSS]: https://github.com/postcss/postcss
 [Gulp PostCSS]: https://github.com/postcss/gulp-postcss
 [Grunt PostCSS]: https://github.com/nDmitry/grunt-postcss
+[modules]: https://docs.npmjs.com/files/package.json

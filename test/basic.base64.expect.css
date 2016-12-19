@@ -19,15 +19,15 @@
 }
 
 .icon {
-	background-image: url(store.svg#none);
+	background-image: url(sprite.svg#none);
 }
 
 .icon {
-	background-image: url(store.svg#);
+	background-image: url(sprite.svg#);
 }
 
 .icon {
-	background-image: url(store.svg);
+	background-image: url(sprite.svg);
 }
 
 .icon {

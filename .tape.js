@@ -8,6 +8,9 @@ module.exports = {
 			options: {
 				utf8: false
 			}
+		},
+		'package': {
+			message: 'supports basic usage'
 		}
 	}
 };

@@ -1,33 +1,33 @@
 .icon {
-	background-image: url(store.svg#camera);
+	background-image: url(sprite.svg#camera);
 }
 
 .icon {
-	background-image: url("store.svg#camera");
+	background-image: url("sprite.svg#camera");
 }
 
 .icon {
-	background-image: url(store.svg#pencil);
+	background-image: url(sprite.svg#pencil);
 	color: transparent;
 	fill: red;
 	stroke: black;
 }
 
 .icon {
-	background-image: url(store.svg#pencil);
+	background-image: url(sprite.svg#pencil);
 	fill: blue;
 }
 
 .icon {
-	background-image: url(store.svg#none);
+	background-image: url(sprite.svg#none);
 }
 
 .icon {
-	background-image: url(store.svg#);
+	background-image: url(sprite.svg#);
 }
 
 .icon {
-	background-image: url(store.svg);
+	background-image: url(sprite.svg);
 }
 
 .icon {

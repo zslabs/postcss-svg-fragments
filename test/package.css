@@ -1,0 +1,31 @@
+.test {
+	background-image: url(test-package#camera);
+}
+
+.test {
+	background-image: url("test-package#camera");
+}
+
+.test {
+	background-image: url(test-package#pencil);
+	color: transparent;
+	fill: red;
+	stroke: black;
+}
+
+.test {
+	background-image: url(test-package#pencil);
+	fill: blue;
+}
+
+.test {
+	background-image: url(test-package#none);
+}
+
+.test {
+	background-image: url(test-package#);
+}
+
+.test {
+	background-image: url(test-package);
+}

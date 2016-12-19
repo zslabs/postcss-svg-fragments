@@ -1,0 +1,6 @@
+{
+  "name": "test-package",
+  "version": "1.0.0",
+  "media": "sprite.svg",
+  "private": true
+}
