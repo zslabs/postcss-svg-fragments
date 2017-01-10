@@ -46,13 +46,15 @@ module.exports = postcss.plugin('postcss-svg-fragments', ({
 					node.type === 'function' &&
 					node.value === 'url' &&
 					node.nodes.length !== 0 &&
-					node.nodes[0].value.indexOf('#') !== -1
+					(/^(?!data:).*#/).test(node.nodes[0].value)
 				) {
-					// current file path of the node
-					const cwf = decl.source.input.file;
+					// current file path of the declaration or root
+					const cwf = (decl.source || css.source || {
+						input: {}
+					}).input.file;
 
 					// current file or current working directory
-					const dir  = cwf ? path.dirname(cwf) : process.cwd();
+					const dir = cwf ? path.dirname(cwf) : process.cwd();
 
 					// parse the svg url
 					const url   = node.nodes[0];

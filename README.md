@@ -1,4 +1,4 @@
-# SVG Fragments <a href="https://github.com/postcss/postcss"><img src="https://postcss.github.io/postcss/logo.svg" alt="PostCSS Logo" width="90" height="90" align="right"></a>
+# SVG Fragments [<img src="https://postcss.github.io/postcss/logo.svg" alt="PostCSS Logo" width="90" height="90" align="right">][SVG Fragments]
 
 [![NPM Version][npm-img]][npm-url]
 [![Build Status][cli-img]][cli-url]
@@ -76,6 +76,8 @@ npm install postcss-svg-fragments --save-dev
 
 #### Node
 
+Use [SVG Fragments] as a processor:
+
 ```js
 require('postcss-svg-fragments').process(YOUR_CSS, { /* options */ });
 ```
@@ -88,7 +90,7 @@ Add [PostCSS] to your build tool:
 npm install postcss --save-dev
 ```
 
-Load [SVG Fragments] as a PostCSS plugin:
+Use [SVG Fragments] as a plugin:
 
 ```js
 postcss([
@@ -104,7 +106,7 @@ Add [Gulp PostCSS] to your build tool:
 npm install gulp-postcss --save-dev
 ```
 
-Enable [SVG Fragments] within your Gulpfile:
+Use [SVG Fragments] in your Gulpfile:
 
 ```js
 var postcss = require('gulp-postcss');
@@ -128,7 +130,7 @@ Add [Grunt PostCSS] to your build tool:
 npm install grunt-postcss --save-dev
 ```
 
-Enable [SVG Fragments] within your Gruntfile:
+Use [SVG Fragments] in your Gruntfile:
 
 ```js
 grunt.loadNpmTasks('grunt-postcss');

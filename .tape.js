@@ -10,7 +10,7 @@ module.exports = {
 			}
 		},
 		'package': {
-			message: 'supports basic usage'
+			message: 'supports package usage'
 		}
 	}
 };
