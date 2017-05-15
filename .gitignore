@@ -1,4 +1,8 @@
 node_modules
-*.log
-*.*cache
-test/*.result.css
+.*
+!.appveyor.yml
+!.gitignore
+!.tape.js
+!.travis.yml
+*.log*
+*.result.css

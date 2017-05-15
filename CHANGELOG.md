@@ -1,5 +1,12 @@
 # Changes to SVG Fragments
 
+### 3.0.0 (May 15, 2017)
+
+- Added: Node v4 compatibility
+- Added: Ability to transpile non-fragments
+- Removed: resolve dependency
+- Updated: PostCSS (6.0.1), xmldoc (v1.1.0)
+
 ### 2.2.0 (January 10, 2017)
 
 - Removed: jscs from development

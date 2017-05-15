@@ -1,5 +1,5 @@
 {
-  "name": "test-package",
+  "name": "sprite-module",
   "version": "1.0.0",
   "media": "sprite.svg",
   "private": true
